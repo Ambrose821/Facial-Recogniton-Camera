@@ -6,11 +6,13 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@aws-sdk/client-rekognition": "^3.934.0",
     "axios": "^1.13.2",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dot-env": "^0.0.1",
+    "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "http-errors": "~1.6.3",
     "jade": "^0.29.0",

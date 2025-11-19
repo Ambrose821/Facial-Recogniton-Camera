@@ -9,6 +9,8 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var faceIdRouter = require('./routes/faceId')
+var {createCollection} = require("./util/rekognition")
+require('dotenv').config()
 
 var app = express();
 
@@ -18,8 +20,8 @@ app.use(cors());
 // view engine setup
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({limit:'10mb'}));
+app.use(express.urlencoded({ extended: false,limit:'10mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -32,15 +34,26 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+// error handler (JSON only, no view engine)
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  console.error(err);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    // only expose stack in development
+    ...(req.app.get('env') === 'development' && { stack: err.stack })
+  });
 });
 
+
+
+//AWS 
+
+
+//collection is students
+// try{
+//   createCollection('students')
+// }catch(err){
+//   console.error("Error With Collection Init: ", err.response?.message)
+// }
 module.exports = app;
