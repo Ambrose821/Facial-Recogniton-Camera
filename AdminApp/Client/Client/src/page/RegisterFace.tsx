@@ -1,4 +1,3 @@
-
 import Camera from "../components/Camera";
 import "../styles/pages/RegisterFace.css";
 import { useState } from "react";

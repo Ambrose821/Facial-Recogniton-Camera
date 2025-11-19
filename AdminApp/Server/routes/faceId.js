@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var {registerFace} = require("../util/rekognition")
+var {registerFace,runFaceId} = require("../util/rekognition")
 
 
 
@@ -21,6 +21,7 @@ router.post("/register", async (req,res)=>{
                 console.log(imgBytes[0])
                 console.log(student_id)
                 const response = await registerFace(imgBytes[0],student_id)
+                console.log(response)
                 
                 res.status(200).json({message:"This should register a student's face"});		
 
@@ -38,15 +39,22 @@ router.post("/register", async (req,res)=>{
 
 
 
-router.post("/identify",(req,res)=>{
+router.post("/identify",async (req,res)=>{
         try{
-           const {firstName, lastName, identifier, imgUrls }= req.body
-           console.log({firstName, lastName, identifier, imgUrls })
-           res.status(200).json({message: "This should try to identify a face"})
+           const {img}= req.body
+           const cleanImage = img.replace(/^data:image\/\w+;base64,/,"")
+           const bytes = Buffer.from(cleanImage,"base64")
+
+           const response = await runFaceId(bytes)
+           res.status(200).json({message: response})
            
 
         }catch(error){
-                res.status(500).json({error:error})
+                 console.error("AWS Error name:", error.name);
+        console.error("AWS Error message:", error.message);
+        console.error("AWS Error details:", error);
+        console.log(error)
+        res.status(500).json({error:error})
         }
 })
 
