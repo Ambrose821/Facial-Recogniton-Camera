@@ -23,7 +23,20 @@
     flex-direction: column;
     gap: 1.25rem;
 }
-
+.success-message{
+    color: rgb(59, 165, 59);
+    background-color: rgba(0, 128, 0, 0.314);
+    border: 2px solid rgb(59, 165, 59);
+    border-radius:18px;
+    padding :1rem;
+}
+.failure-message{
+    color: red;
+    background-color:rgba(255, 0, 0, 0.175);
+    border: 2px solid red;
+    border-radius:18px;
+    padding: 1rem;
+}
 .form h2 {
     margin: 0 0 0.5rem 0;
 }

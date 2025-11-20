@@ -1,12 +1,15 @@
 import Camera from "../components/Camera";
 import "../styles/pages/RegisterFace.css";
 import { useState } from "react";
+import { registerFace } from "../api/RegisterFace";
 
 export default function RegisterFace() {
     const [imgUrls, setImgUrls] = useState<string[]>([]);
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [identifier, setIdentifier] = useState("");
+    const [succesfulReg, setSuccessfulReg] = useState(false)
+    const [errState, setErrState] = useState(false)
 
     const captureCallback = (imgUrl: string) => {
         setImgUrls((prev) => [...prev, imgUrl]);
@@ -16,10 +19,15 @@ export default function RegisterFace() {
         setImgUrls([]);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // TODO: hook this up to your backend/register API
         console.log({ firstName, lastName, identifier, imgUrls });
+
+        const success = await registerFace({ firstName, lastName, identifier, imgUrls })
+
+        setSuccessfulReg(success)
+        setErrState(!success)
     };
 
     const hasImages = imgUrls.length > 0;
@@ -28,6 +36,16 @@ export default function RegisterFace() {
         <div className={hasImages ? "register-content has-images" : "register-content"}>
             <div className="form">
                 <h2>Register Person</h2>
+
+                {succesfulReg && !errState &&
+                <div className="success-message">
+                    Face Registerd! Feel free to add more images for this user
+                </div>}
+                 {!succesfulReg && errState &&
+                <div className="failure-message">
+                    Uh oh! Something went wrong
+                </div>}
+
                 <form className="form-fields" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="firstName">First Name</label>

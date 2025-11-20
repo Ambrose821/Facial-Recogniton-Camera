@@ -28,6 +28,9 @@ export default function SideBar({children}: {children: ReactNode}){
                         <div className="menu-option">View Registered Faces</div>
                         <div className="menu-option">Remove Face</div>
                         <div className="menu-option">View Logs</div>
+                        <Link to = '/faceid'>
+                            <div className="menu-option">Test Face Id</div>
+                        </Link>
                         
                     </div>
                 </div>
