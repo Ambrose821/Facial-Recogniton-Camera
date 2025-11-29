@@ -1,0 +1,15 @@
+.logs-table{
+    
+    width: 90%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+   
+}
+
+tr{
+    text-align: center;
+    border: 1px solid #ddd;
+}
+table, th, td {
+  border: 1px solid black; /* Sets a 1px solid black border */
+}

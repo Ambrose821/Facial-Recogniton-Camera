@@ -9,10 +9,20 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var faceIdRouter = require('./routes/faceId')
+var authLogsRouter = require('./routes/authlogs')
 var {createCollection} = require("./util/rekognition")
 require('dotenv').config()
 
 var app = express();
+
+
+
+//MongoDB Connection
+
+const connectDB = require('./db/dbconfig')
+connectDB();
+
+const AuthLog = require('./db/models/AuthLog')
 
 //Temporarily allow from any ip for dev purposes
 app.use(cors());
@@ -28,6 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/faceId',faceIdRouter);
+app.use('/logs',authLogsRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

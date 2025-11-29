@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var {registerFace,runFaceId} = require("../util/rekognition")
-
+var {createAuthLog} = require("../crud/AuthLogs")
 
 
 router.post("/register", async (req,res)=>{
@@ -21,6 +21,8 @@ router.post("/register", async (req,res)=>{
                 console.log(imgBytes[0])
                 console.log(student_id)
                 const response = await registerFace(imgBytes[0],student_id)
+        
+
                 console.log(response)
                 
                 res.status(200).json({message:"This should register a student's face"});		
@@ -42,11 +44,22 @@ router.post("/register", async (req,res)=>{
 router.post("/identify",async (req,res)=>{
         try{
            const {img}= req.body
+           console.log(typeof img)
            const cleanImage = img.replace(/^data:image\/\w+;base64,/,"")
            const bytes = Buffer.from(cleanImage,"base64")
 
            const response = await runFaceId(bytes)
-           res.status(200).json({message: response})
+           const FaceMatches = response.FaceMatches
+           if( FaceMatches && FaceMatches.length > 0){
+                const bestMatch = FaceMatches[0]
+                const student_id = bestMatch.Face.ExternalImageId
+                await createAuthLog({userId:student_id,timestamp:Date.now(),success:true,imageCapture:img})
+                res.status(200).json({message: response})
+           }else{
+                res.status(404).json({message:"No face match found"})
+                await createAuthLog({userId:null,timestamp:Date.now(),success:false,imageCapture:img})
+           }
+           
            
 
         }catch(error){
