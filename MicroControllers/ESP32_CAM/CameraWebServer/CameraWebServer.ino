@@ -1,5 +1,6 @@
 #include "esp_camera.h"
 #include <WiFi.h>
+#include<HTTPClient.h>
 
 // ===========================
 // Select camera model in board_config.h
@@ -14,6 +15,21 @@ const char *password = "amberose";
 
 void startCameraServer();
 void setupLedFlash();
+void publishIPAddress();
+
+String apiURL = "https://facial-recogniton-camera-production.up.railway.app";
+String LocalURL = "http://localhost:3000";
+void publishIpAddress(){
+
+  HTTPClient http;
+  String serverpath = apiURL  + "/faceId/setCameraIP";
+  http.begin(serverpath.c_str());
+  String payload = "{\"cameraIP\":\""+WiFi.localIP().toString()+"\"}";
+  http.addHeader("Content-Type", "application/json");
+  int status = http.POST(payload);
+  Serial.println(status);
+
+}
 
 void setup() {
   Serial.begin(115200);
@@ -122,6 +138,7 @@ void setup() {
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
+  publishIpAddress();
 }
 
 void loop() {

@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include<HTTPClient.h>
 #include <Base64.h>
+#include <Arduino_JSON.h>
 
 #define green 27
 #define red 12
@@ -20,8 +21,10 @@ volatile unsigned char rotated = false;
 const char* ssid = "AmbroseIphone16";
 const char* password = "amberose";
 
-String esp32camURL = "http://172.20.10.2";
+String esp32camURL = "";
 String apiURL = "https://facial-recogniton-camera-production.up.railway.app";
+String LocalURL = "http://localhost:3000";
+
 
 
 
@@ -63,7 +66,7 @@ void unLock(){
 void setFlashOn(){
   if(WiFi.status() == WL_CONNECTED){
     HTTPClient http;
-    String serverPath = esp32camURL + "/control?var=led_intensity&val=255";
+    String serverPath =  "http://" +esp32camURL + "/control?var=led_intensity&val=255";
 
     http.begin(serverPath.c_str());
     int httpResponseCode = http.GET();
@@ -74,7 +77,8 @@ void setFlashOn(){
 String getImageCapture(){
   if(WiFi.status() == WL_CONNECTED){
     HTTPClient http;
-    String serverPath = esp32camURL + "/capture";
+    String serverPath = "http://" + esp32camURL + "/capture";
+    Serial.println(serverPath);
     http.begin(serverPath.c_str());
 
     int httpResponseCode = http.GET();
@@ -176,11 +180,38 @@ void ISR(){
 }
 
 
+void getCameraIP(String &esp32camURL){
+  int status =-1;
+  String res ="";
+  while(status != 200){
+    digitalWrite(yellow,HIGH);
+    HTTPClient http;
+    String serverpath = apiURL + "/faceId/getCameraIP";
+    http.begin(serverpath.c_str());
+    status = http.GET();
+    res = http.getString();
+    Serial.println(res);
+    Serial.print(status);
+    delay(250);
+    digitalWrite(yellow,LOW);
+    delay(250);
+  }
+  JSONVar myObject = JSON.parse(res);
+  esp32camURL = (const char*)myObject["cameraIP"];
+  Serial.println(esp32camURL);
+  digitalWrite(green,HIGH);
+  delay(250);
+  digitalWrite(green,LOW);
+
+
+}
+
 void setup() {
   Serial.begin(115200);
   setUpPins();
   setupWiFi();
   attachInterrupt(digitalPinToInterrupt(button),ISR,FALLING);
+  getCameraIP(esp32camURL);
   
   // put your setup code here, to run once:
 
