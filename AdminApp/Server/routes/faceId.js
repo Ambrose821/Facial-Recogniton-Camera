@@ -84,7 +84,7 @@ router.post("/identify",async (req,res)=>{
         console.error("AWS Error message:", error.message);
         console.error("AWS Error details:", error);
         console.log(error)
-        await createAuthLog({userId:null,timestamp:Date.now(),success:false,imageCapture:cleanImage})
+        await createAuthLog({userId:null,timestamp:Date.now(),success:false,imageCapture:req.body.img})
         res.status(500).json({error:error})
         }
 })
