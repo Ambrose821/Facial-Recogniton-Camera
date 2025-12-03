@@ -15,7 +15,8 @@ require('dotenv').config()
 
 var app = express();
 
-
+//Local Variables
+app.locals.cameraIP = '';
 
 //MongoDB Connection
 
@@ -56,6 +57,7 @@ app.use(function(err, req, res, next) {
     ...(req.app.get('env') === 'development' && { stack: err.stack })
   });
 });
+
 
 
 

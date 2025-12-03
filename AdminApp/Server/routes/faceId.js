@@ -4,6 +4,23 @@ var {registerFace,runFaceId} = require("../util/rekognition")
 var {createAuthLog} = require("../crud/AuthLogs")
 
 
+
+router.post("/setCameraIP", (req,res)=>{
+        const {cameraIP} = req.body
+        req.app.locals.cameraIP = cameraIP
+        console.log("Camera IP set to:", req.app.locals.cameraIP)
+        res.status(200).json({message:"Camera IP set successfully"})
+})
+
+router .get("/getCameraIP",(req,res)=>{
+        const cameraIP = req.app.locals.cameraIP
+        if(!cameraIP){
+                res.status(500).json({error:"Camera IP not set. Keep trying..."})
+        }else{
+                res.status(200).json({cameraIP:cameraIP})
+        }
+
+})
 router.post("/register", async (req,res)=>{
 
 	try{
@@ -56,8 +73,8 @@ router.post("/identify",async (req,res)=>{
                 await createAuthLog({userId:student_id,timestamp:Date.now(),success:true,imageCapture:img})
                 res.status(200).json({message: response})
            }else{
-                res.status(404).json({message:"No face match found"})
                 await createAuthLog({userId:null,timestamp:Date.now(),success:false,imageCapture:img})
+                res.status(404).json({message:"No face match found"})
            }
            
            
@@ -67,6 +84,7 @@ router.post("/identify",async (req,res)=>{
         console.error("AWS Error message:", error.message);
         console.error("AWS Error details:", error);
         console.log(error)
+        await createAuthLog({userId:null,timestamp:Date.now(),success:false,imageCapture:img})
         res.status(500).json({error:error})
         }
 })

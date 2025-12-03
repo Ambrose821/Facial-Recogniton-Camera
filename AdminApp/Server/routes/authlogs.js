@@ -5,7 +5,6 @@ const {getAuthLogs} = require("../crud/AuthLogs")
 
 router.get("/authlogs", async(req,res)=>{
     try{
-
         const logs = await getAuthLogs()
         res.status(200).json({logs:logs})
     }
