@@ -8,17 +8,25 @@
 #include "board_config.h"
 
 // ===========================
-// Enter your WiFi credentials
+//WiFi credentials
 // ===========================
 const char *ssid = "AmbroseIphone16";
 const char *password = "amberose";
 
+
+
+// ===========================
+// Hosts a small webserver (Fowarward Declaration)
+// ===========================
 void startCameraServer();
 void setupLedFlash();
 void publishIPAddress();
 
 String apiURL = "https://facial-recogniton-camera-production.up.railway.app";
 String LocalURL = "http://localhost:3000";
+
+// Sends the ESP32-CAM's local IP address to the backend server via HTTP POST
+// This allows the server to know where to find the camera on the network
 void publishIpAddress(){
 
   HTTPClient http;
@@ -31,6 +39,8 @@ void publishIpAddress(){
 
 }
 
+// Initializes the ESP32-CAM: configures camera settings, connects to WiFi,
+// starts the camera web server, and publishes the camera's IP address
 void setup() {
   Serial.begin(115200);
   Serial.setDebugOutput(true);
@@ -141,6 +151,7 @@ void setup() {
   publishIpAddress();
 }
 
+// Main loop - currently unused as the camera web server runs in a separate task
 void loop() {
   // Do nothing. Everything is done in another task by the web server
   delay(10000);

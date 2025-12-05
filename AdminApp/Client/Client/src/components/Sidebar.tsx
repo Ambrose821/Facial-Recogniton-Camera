@@ -28,6 +28,9 @@ export default function SideBar({ children }: { children: ReactNode }) {
             <Link to="/faceid">
               <div className="menu-option">Test Face Id</div>
             </Link>
+            <Link to="/users">
+              <div className="menu-option">Manage Users</div>
+            </Link>
           </div>
         </div>
 

@@ -1,0 +1,79 @@
+.manage-users-page {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.subtext {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.loading, .empty {
+  padding: 12px;
+  color: #666;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.user-id {
+  font-weight: 600;
+}
+
+.primary-button {
+  background-color: #4a6cf7;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.secondary-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.failure-message {
+  background: #ffe5e5;
+  color: #a40000;
+  padding: 10px 12px;
+  border-radius: 6px;
+}

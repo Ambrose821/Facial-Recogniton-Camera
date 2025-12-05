@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var {registerFace,runFaceId} = require("../util/rekognition")
+var {registerFace,runFaceId, listUserIds, deleteFacesByUserId} = require("../util/rekognition")
 var {createAuthLog} = require("../crud/AuthLogs")
 
 
@@ -88,6 +88,29 @@ router.post("/identify",async (req,res)=>{
         res.status(500).json({error:error})
         }
 })
+
+// List all user IDs (ExternalImageId) in the Rekognition collection
+router.get('/users', async (req, res) => {
+        try {
+                const ids = await listUserIds();
+                res.status(200).json({ userIds: ids });
+        } catch (error) {
+                console.error('List userIds error:', error);
+                res.status(500).json({ error: 'Failed to list user IDs' });
+        }
+});
+
+// Delete all faces by userId (ExternalImageId) in the Rekognition collection
+router.delete('/users/:userId', async (req, res) => {
+        try {
+                const { userId } = req.params;
+                const result = await deleteFacesByUserId(userId);
+                res.status(200).json(result);
+        } catch (error) {
+                console.error('Delete by userId error:', error);
+                res.status(500).json({ error: 'Failed to delete faces for userId' });
+        }
+});
 
 
 module.exports = router
