@@ -1,6 +1,6 @@
 import Camera from '../components/Camera';
 import '../styles/pages/RegisterFace.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { registerFace } from '../api/RegisterFace';
 
 export default function RegisterFace() {
@@ -10,6 +10,14 @@ export default function RegisterFace() {
   const [identifier, setIdentifier] = useState('');
   const [succesfulReg, setSuccessfulReg] = useState(false);
   const [errState, setErrState] = useState(false);
+  const [showConsent, setShowConsent] = useState<boolean>(false);
+
+  useEffect(() => {
+    const consent = localStorage.getItem('face-rec-consent');
+    if (!consent) {
+      setShowConsent(true);
+    }
+  }, []);
 
   const captureCallback = (imgUrl: string) => {
     setImgUrls((prev) => [...prev, imgUrl]);
@@ -34,6 +42,36 @@ export default function RegisterFace() {
 
   return (
     <div className={hasImages ? 'register-content has-images' : 'register-content'}>
+      {showConsent && (
+        <div className="consent-overlay">
+          <div className="consent-modal">
+            <h3>Consent Required</h3>
+            <p>
+              By continuing, you consent to the capture and processing of your image for identity
+              verification. Images may be stored and used to improve recognition accuracy.
+            </p>
+            <div className="consent-actions">
+              <button
+                className="primary-button"
+                onClick={() => {
+                  localStorage.setItem('face-rec-consent', 'accepted');
+                  setShowConsent(false);
+                }}>
+                I Agree
+              </button>
+              <button
+                className="secondary-button"
+                onClick={() => {
+                  localStorage.setItem('face-rec-consent', 'declined');
+                  // Hide modal and keep page non-interactive by disabling form actions
+                  setShowConsent(false);
+                }}>
+                Decline
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="form">
         <h2>Register Person</h2>
 
@@ -81,7 +119,14 @@ export default function RegisterFace() {
           <button
             type="submit"
             className="primary-button register-button"
-            disabled={!firstName || !lastName || !identifier || !hasImages}>
+            disabled={
+              showConsent ||
+              localStorage.getItem('face-rec-consent') === 'declined' ||
+              !firstName ||
+              !lastName ||
+              !identifier ||
+              !hasImages
+            }>
             Register Person
           </button>
         </form>
