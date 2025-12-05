@@ -106,7 +106,7 @@ export default function RegisterFace() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="identifier">ID / Email / Badge</label>
+            <label htmlFor="identifier">Student ID</label>
             <input
               id="identifier"
               type="text"
